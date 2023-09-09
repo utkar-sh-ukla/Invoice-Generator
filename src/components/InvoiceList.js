@@ -15,23 +15,31 @@ class InvoiceList extends Component {
     };
   }
 
+  // To delete an invoice
   handleDelete = (id) => {
     this.props.deleteInvoice(id);
   };
 
+  // To edit an invoice
   handleEdit = (id) => {
     this.props.setSelectedInvoiceId(id);
   };
 
+  // To get the invoice by id
   getInvoiceById = (id) => {
     return this.props.invoices.find((item) => item.id === id);
   };
+
+  // To view an invoice
   handleView = (id) => {
     this.setState({ isOpen: true });
     this.setState({ selectedInvoice: this.getInvoiceById(id) });
   };
 
+  // To close the modal
   closeModal = () => this.setState({ isOpen: false });
+  
+  
   render() {
     const invoices = this.props.invoices;
     const selectedInvoice = this.state.selectedInvoice;

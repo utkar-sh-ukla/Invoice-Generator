@@ -6,7 +6,7 @@ import InvoiceForm from "./components/InvoiceForm";
 import InvoiceList from "./components/InvoiceList";
 import { connect } from "react-redux";
 import { Button } from "react-bootstrap";
-import {setSelectedInvoiceId} from './actions'
+import { setSelectedInvoiceId } from "./actions";
 import { bindActionCreators } from "redux";
 
 class App extends Component {
@@ -23,15 +23,13 @@ class App extends Component {
           <Button
             variant="primary"
             className="w-30"
-            onClick={selectedInvoiceId ? this.closeFormModal : this.openFormModal}
+            onClick={
+              selectedInvoiceId ? this.closeFormModal : this.openFormModal
+            }
           >
             {selectedInvoiceId ? "← Invoice List" : "+ Create Invoice"}
           </Button>
-          {selectedInvoiceId ? (
-            <InvoiceForm />
-          ) : (
-            <InvoiceList />
-          )}
+          {selectedInvoiceId ? <InvoiceForm /> : <InvoiceList />}
         </Container>
       </div>
     );
@@ -39,7 +37,6 @@ class App extends Component {
 }
 
 const mapStateToProps = (state) => {
-  console.log(state, 'state from props');
   return {
     selectedInvoiceId: state.selectedInvoiceId,
   };

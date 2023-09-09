@@ -47,21 +47,8 @@ class InvoiceForm extends React.Component {
     ];
     this.editField = this.editField.bind(this);
   }
-  handleRowDel(items) {
-    var index = this.state.items.indexOf(items);
-    this.state.items.splice(index, 1);
-    this.setState(this.state.items);
-  }
-  handleInvoiceSubmit = () => {
-    const { selectedInvoiceId } = this.props;
-    const { isOpen, ...invoiceInfo } = this.state;
-    if (selectedInvoiceId !== null && selectedInvoiceId !== 1) {
-      this.props.editInvoice(invoiceInfo);
-      this.props.setSelectedInvoiceId(null);
-    } else {
-      this.props.addInvoice({ ...invoiceInfo, id: uuid() });
-    }
-  };
+
+  // To add an invoice item
   handleAddEvent(evt) {
     var id = (+new Date() + Math.floor(Math.random() * 999999)).toString(36);
     var items = {
@@ -74,6 +61,35 @@ class InvoiceForm extends React.Component {
     this.state.items.push(items);
     this.setState(this.state.items);
   }
+  
+  // To edit an invoice item
+  onItemizedItemEdit(evt) {
+    var item = {
+      id: evt.target.id,
+      name: evt.target.name,
+      value: evt.target.value,
+    };
+    var items = this.state.items.slice();
+    var newItems = items.map(function (items) {
+      for (var key in items) {
+        if (key == item.name && items.id == item.id) {
+          items[key] = item.value;
+        }
+      }
+      return items;
+    });
+    this.setState({ items: newItems });
+    this.handleCalculateTotal();
+  }
+
+  // To delete an invoice item
+  handleRowDel(items) {
+    var index = this.state.items.indexOf(items);
+    this.state.items.splice(index, 1);
+    this.setState(this.state.items);
+  }
+
+  // To calculate the total
   handleCalculateTotal() {
     var items = this.state.items;
     var subTotal = 0;
@@ -116,41 +132,45 @@ class InvoiceForm extends React.Component {
       }
     );
   }
-  onItemizedItemEdit(evt) {
-    var item = {
-      id: evt.target.id,
-      name: evt.target.name,
-      value: evt.target.value,
-    };
-    var items = this.state.items.slice();
-    var newItems = items.map(function (items) {
-      for (var key in items) {
-        if (key == item.name && items.id == item.id) {
-          items[key] = item.value;
-        }
-      }
-      return items;
-    });
-    this.setState({ items: newItems });
-    this.handleCalculateTotal();
-  }
+
+  // To edit an invoice field
   editField = (event) => {
     this.setState({
       [event.target.name]: event.target.value,
     });
     this.handleCalculateTotal();
   };
+
+  // To change the currency
   onCurrencyChange = (selectedOption) => {
     this.setState(selectedOption);
   };
+
+  // To open the modal
   openModal = (event) => {
     event.preventDefault();
     this.handleCalculateTotal();
     this.setState({ isOpen: true });
   };
+
+  // To close the modal
   closeModal = (event) => this.setState({ isOpen: false });
+
+  // To get the invoice by id
   getInvoiceById = (id) => {
     return this.props.invoices.find((item) => item.id === id);
+  };
+
+  // To submit an invoice
+  handleInvoiceSubmit = () => {
+    const { selectedInvoiceId } = this.props;
+    const { isOpen, ...invoiceInfo } = this.state;
+    if (selectedInvoiceId !== null && selectedInvoiceId !== 1) {
+      this.props.editInvoice(invoiceInfo);
+      this.props.setSelectedInvoiceId(null);
+    } else {
+      this.props.addInvoice({ ...invoiceInfo, id: uuid() });
+    }
   };
 
   componentDidMount() {
